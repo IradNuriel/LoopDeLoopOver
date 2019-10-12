@@ -62,7 +62,7 @@ public class Board5X5Activity extends AppCompatActivity {
                     // get the new list index
                     final int index = calculateNewIndex(event.getX(), event.getY());
                     //check the type of moving the view
-                    if(Math.abs(index - oldIndex) != 1 && Math.abs(index - oldIndex) != mGrid.getColumnCount() && index != oldIndex){
+                    if(Math.abs(index - oldIndex) != 1 && Math.abs(index - oldIndex) != mGrid.getColumnCount() && index != oldIndex){//Illegal spin!
 
                     }else if(Math.abs(index - oldIndex) == 1){//A row spinning!
                         int row = oldIndex / mGrid.getColumnCount();
