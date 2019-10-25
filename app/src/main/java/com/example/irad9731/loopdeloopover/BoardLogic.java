@@ -1,10 +1,17 @@
 package com.example.irad9731.loopdeloopover;
 
 import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public abstract class BoardLogic extends AppCompatActivity {
     protected GridLayout mGrid;
@@ -23,6 +30,83 @@ public abstract class BoardLogic extends AppCompatActivity {
         // and not as an actual grid, so this is how to get the new index
         int index = row * mGrid.getColumnCount() + column;
         return index;
+    }
+
+
+    protected boolean isGameFinished(){
+        boolean flag = true;
+        for(int i=0;i<(mGrid.getRowCount()*mGrid.getColumnCount() -1) && flag;i++){
+            View current = mGrid.getChildAt(i);
+            View next = mGrid.getChildAt(i+1);
+            final TextView currentText = (TextView) current.findViewById(R.id.text);
+            final TextView nextText = (TextView) next.findViewById(R.id.text);
+            int currentId = Integer.parseInt(currentText.getText().toString());
+            int nextId = Integer.parseInt(nextText.getText().toString());
+            flag = flag && (currentId == (nextId - 1));
+        }
+        return flag;
+    }
+
+
+    public void setArrayPrefs(String arrayName, ArrayList<Integer> array) {
+        String fileName = this.getClass().getSimpleName();
+        SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(arrayName +"_size", array.size());
+        for(int i=0;i<array.size();i++)
+            editor.putInt(arrayName + "_" + i, array.get(i));
+        editor.apply();
+    }
+
+    public ArrayList<Integer> getArrayPrefs(String arrayName) {
+        String fileName = this.getClass().getSimpleName();
+        SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        int size = prefs.getInt(arrayName + "_size", 0);
+        ArrayList<Integer> array = new ArrayList<>(size);
+        for(int i=0;i<size;i++)
+            array.add(prefs.getInt(arrayName + "_" + i,0));
+        return array;
+    }
+
+    public void removeArrayFromPref(String arrayName){
+        String fileName = this.getClass().getSimpleName();
+        SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(!isGameFinished()) {
+            ArrayList<Integer> currentState = new ArrayList<Integer>();
+            for (int i = 0; i < mGrid.getColumnCount() * mGrid.getRowCount(); i++) {
+                View current = mGrid.getChildAt(i);
+                final TextView currentText = (TextView) current.findViewById(R.id.text);
+                currentState.add(Integer.parseInt(currentText.getText().toString()));
+            }
+            setArrayPrefs("gameState", currentState);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ArrayList<Integer> state = getArrayPrefs("gameState");
+        if(!state.isEmpty() && state.size() == (mGrid.getChildCount())){
+            mGrid.removeAllViews();
+            final LayoutInflater inflater = LayoutInflater.from(this);
+            for (int i = 0; i < state.size(); i++) {
+                //Adding the items dynamically into the grid.
+                final View itemView = inflater.inflate(R.layout.grid_item, mGrid, false);
+                final TextView text = (TextView) itemView.findViewById(R.id.text);
+                text.setText(String.valueOf(state.get(i)));
+                itemView.setOnLongClickListener(new LongPressListener());
+                mGrid.addView(itemView);
+            }
+            removeArrayFromPref("gameState");
+        }
     }
 
     protected class DragListener implements View.OnDragListener {
@@ -88,6 +172,12 @@ public abstract class BoardLogic extends AppCompatActivity {
                     break;
                 case DragEvent.ACTION_DROP:
                     view.setVisibility(View.VISIBLE);
+                    boolean ended = isGameFinished();
+                    if(ended){
+                        removeArrayFromPref("gameState");
+                        setResult(RESULT_OK);
+                        finish();
+                    }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     if (!event.getResult()) {
