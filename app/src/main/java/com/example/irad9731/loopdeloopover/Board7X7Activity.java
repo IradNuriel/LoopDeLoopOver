@@ -1,23 +1,20 @@
 package com.example.irad9731.loopdeloopover;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.support.v7.widget.GridLayout;
 import android.widget.TextView;
 
-
-public class Board5X5Activity extends BoardLogic {
-
-    private static final int NBR_ITEMS = 25;
-//    private GridLayout mGrid;
+public class Board7X7Activity extends BoardLogic {
+    private static final int NBR_ITEMS = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_board5_x5);
+        setContentView(R.layout.activity_board7_x7);
 
-        mGrid = (GridLayout) findViewById(R.id.grid_layout5X5);
+        mGrid = (GridLayout) findViewById(R.id.grid_layout7X7);
         mGrid.setOnDragListener(new DragListener());
         final LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < NBR_ITEMS; i++) {
@@ -29,5 +26,4 @@ public class Board5X5Activity extends BoardLogic {
             mGrid.addView(itemView);
         }
     }
-
 }
