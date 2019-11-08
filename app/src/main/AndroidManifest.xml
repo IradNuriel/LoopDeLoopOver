@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,6 +21,7 @@
         <activity android:name=".Board5X5Activity" />
         <activity android:name=".Board7X7Activity" />
         <activity android:name=".Board9X9Activity" />
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>

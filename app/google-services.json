@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "31911836307",
+    "firebase_url": "https://loopdeloopover-bde58.firebaseio.com",
+    "project_id": "loopdeloopover-bde58",
+    "storage_bucket": "loopdeloopover-bde58.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31911836307:android:9b4d418668ebf48774ab66",
+        "android_client_info": {
+          "package_name": "com.example.irad9731.loopdeloopover"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31911836307-uvev09nm5v32m3rnj72chnrj1jb0tp6i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.irad9731.loopdeloopover",
+            "certificate_hash": "bc4b6cdca09afe14618bfeaed924baff9b8a3292"
+          }
+        },
+        {
+          "client_id": "31911836307-4u5bkb351tsaulbd6qcm79n5b6q87v8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmFOI9CrJxpP79WrgPxtkPC_y-WOLJOhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31911836307-4u5bkb351tsaulbd6qcm79n5b6q87v8u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

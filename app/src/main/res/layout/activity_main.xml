@@ -32,4 +32,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="93dp"
         android:text="9X9" />
+
+    <TextView
+        android:id="@+id/playerName"
+        android:layout_width="135dp"
+        android:layout_height="46dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="62dp"
+        android:textAlignment="textStart"
+        android:textColor="@android:color/background_dark" />
 </RelativeLayout>

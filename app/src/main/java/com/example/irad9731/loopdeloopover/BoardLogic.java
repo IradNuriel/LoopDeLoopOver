@@ -3,6 +3,7 @@ package com.example.irad9731.loopdeloopover;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -79,7 +80,7 @@ public abstract class BoardLogic extends AppCompatActivity {
         return array;
     }
 
-    public void removeArrayFromPref(String arrayName){
+    public void removeArrayFromPref(){
         String fileName = this.getClass().getSimpleName();
         SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -91,7 +92,7 @@ public abstract class BoardLogic extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if(!isGameFinished()) {
-            ArrayList<Integer> currentState = new ArrayList<Integer>();
+            ArrayList<Integer> currentState = new ArrayList<>();
             for (int i = 0; i < mGrid.getColumnCount() * mGrid.getRowCount(); i++) {
                 View current = mGrid.getChildAt(i);
                 final TextView currentText = (TextView) current.findViewById(R.id.text);
@@ -122,7 +123,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                 itemView.setOnLongClickListener(new LongPressListener());
                 mGrid.addView(itemView);
             }
-            removeArrayFromPref("gameState");
+            removeArrayFromPref();
         }
         String s = this.getClass().getSimpleName();
         SharedPreferences sharedPreferences = getSharedPreferences(s,Context.MODE_PRIVATE);
@@ -144,7 +145,6 @@ public abstract class BoardLogic extends AppCompatActivity {
                     final int index = calculateNewIndex(event.getX(), event.getY());
                     //check the type of moving the view
                     if(Math.abs(index - oldIndex) != 1 && Math.abs(index - oldIndex) != mGrid.getColumnCount() && index != oldIndex){//Illegal spin!
-
                     }else if(Math.abs(index - oldIndex) == 1){//A row spinning!
                         int row = oldIndex / mGrid.getColumnCount();
                         int dir = index - oldIndex;
@@ -195,7 +195,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                     view.setVisibility(View.VISIBLE);
                     boolean ended = isGameFinished();
                     if(ended){
-                        removeArrayFromPref("gameState");
+                        removeArrayFromPref();
                         setResult(RESULT_OK);
                         finish();
                     }
@@ -216,7 +216,8 @@ public abstract class BoardLogic extends AppCompatActivity {
         public boolean onLongClick(View view) {
             final ClipData data = ClipData.newPlainText("", "");
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder();
-            view.startDrag(data, shadowBuilder, view, 0);
+            view.startDragAndDrop(data, shadowBuilder, view, 1);
+
             return true;
         }
     }
