@@ -20,6 +20,7 @@ public class Board5X5Activity extends BoardLogic {
         setContentView(R.layout.activity_board5_x5);
 
         mGrid = (GridLayout) findViewById(R.id.grid_layout5X5);
+        mClock = (TextView)findViewById(R.id.clock5X5);
         mGrid.setOnDragListener(new DragListener());
         int[] content = new int[NBR_ITEMS];
 

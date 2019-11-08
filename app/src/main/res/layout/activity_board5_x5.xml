@@ -5,6 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".Board5X5Activity">
 
+
+
+
     <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/grid_layout5X5"
@@ -16,6 +19,16 @@
         android:layout_marginTop="93dp"
         app:columnCount="5" />
 
+    <TextView
+        android:id="@+id/clock5X5"
+        android:layout_width="147dp"
+        android:layout_height="36dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp"
+        android:text="00:00"
+        android:textColor="@android:color/background_dark"
+        android:textSize="20sp" />
 
 
 </RelativeLayout>

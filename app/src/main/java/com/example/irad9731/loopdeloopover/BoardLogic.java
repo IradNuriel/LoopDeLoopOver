@@ -2,10 +2,12 @@ package com.example.irad9731.loopdeloopover;
 
 import android.content.ClipData;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,17 @@ import java.util.ArrayList;
 
 public abstract class BoardLogic extends AppCompatActivity {
     protected GridLayout mGrid;
+    protected TextView mClock;
+    public long start_time;
+    private ClockThread clockThread;
 
-
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        start_time = System.currentTimeMillis();
+        clockThread = new ClockThread();
+        clockThread.start();
+    }
 
     protected int calculateNewIndex(float x, float y) {
         //calculating the new column of the item
@@ -86,8 +97,14 @@ public abstract class BoardLogic extends AppCompatActivity {
                 final TextView currentText = (TextView) current.findViewById(R.id.text);
                 currentState.add(Integer.parseInt(currentText.getText().toString()));
             }
+            String s = this.getClass().getSimpleName();
+            SharedPreferences sharedPreferences = getSharedPreferences(s,Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putLong("startTime",start_time);
+            editor.apply();
             setArrayPrefs("gameState", currentState);
         }
+
     }
 
     @Override
@@ -107,6 +124,10 @@ public abstract class BoardLogic extends AppCompatActivity {
             }
             removeArrayFromPref("gameState");
         }
+        String s = this.getClass().getSimpleName();
+        SharedPreferences sharedPreferences = getSharedPreferences(s,Context.MODE_PRIVATE);
+        start_time = sharedPreferences.getLong("startTime",System.currentTimeMillis());
+        //clockThread.start();
     }
 
     protected class DragListener implements View.OnDragListener {
@@ -197,6 +218,39 @@ public abstract class BoardLogic extends AppCompatActivity {
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder();
             view.startDrag(data, shadowBuilder, view, 0);
             return true;
+        }
+    }
+
+    public class ClockThread extends Thread{
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mClock != null) {
+                                long time = System.currentTimeMillis();
+                                long timeFromStart = time - start_time;
+                                long timeInSeconds = timeFromStart / 1000;
+                                long min = timeInSeconds / 60;
+                                long seconds = timeInSeconds % 60;
+                                String m = String.valueOf(min);
+                                m = (m.length() > 1) ? m : "0" + m;
+                                String s = String.valueOf(seconds);
+                                s = (s.length() > 1) ? s : "0" + s;
+                                final String CLOCK = m + ":" + s;
+                                mClock.setText(CLOCK);
+                            }
+                        }
+                    });
+                    sleep(1000);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.e("Clock error",e.getMessage());
+            }
+
         }
     }
 

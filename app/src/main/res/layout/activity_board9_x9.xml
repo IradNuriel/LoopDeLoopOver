@@ -16,6 +16,16 @@
         android:layout_marginTop="93dp"
         app:columnCount="9" />
 
+    <TextView
+        android:id="@+id/clock9X9"
+        android:layout_width="138dp"
+        android:layout_height="51dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"
+        android:text="00:00"
+        android:textColor="@android:color/background_dark"
+        android:textSize="20sp" />
 
 
 </RelativeLayout>
