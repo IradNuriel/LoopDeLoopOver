@@ -1,6 +1,7 @@
 package com.example.irad9731.loopdeloopover;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,18 +11,29 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+
+
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public ProgressBar mProgress;
     private FirebaseAuth mAuth;
     private static final String TAG="LoopDeLoopOver";
     private EditText mEmailField;
     private EditText mPasswordField;
+    private EditText mNameField;
 
 
     @Override
@@ -32,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmailField = findViewById(R.id.field_email);
         mPasswordField = findViewById(R.id.field_password);
         mProgress = findViewById(R.id.progressBar);
-
+        mNameField = findViewById(R.id.playerName);
     }
 
 
@@ -66,6 +78,26 @@ public class LoginActivity extends AppCompatActivity {
         // [END sign_in_with_email]
     }
 
+    private void addNewPlayer(final FirebaseUser user){
+
+        Player p = new Player(mNameField.getText().toString(),user.getUid(),Long.MAX_VALUE,Long.MAX_VALUE,Long.MAX_VALUE);
+        database.getReference().child("players").child(user.getUid()).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("nit",e.getMessage());
+            }
+        });
+
+
+    }
+
+
     public void showProgress() {
         mProgress.setVisibility(View.VISIBLE);
     }
@@ -92,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            addNewPlayer(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -106,10 +139,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void moveToMenu(FirebaseUser currentUser){
-        Intent i = new Intent(LoginActivity.this,MainActivity.class);
-        i.putExtra("name", currentUser.getEmail());
-        startActivity(i);
+    private void moveToMenu(final FirebaseUser currentUser){
+        database.getReference().child("players").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Intent i = new Intent(LoginActivity.this,MainActivity.class);
+                Map m = (Map)dataSnapshot.getValue();
+                    String name = (String) m.get("name");
+                    i.putExtra("name", name);
+                    startActivity(i);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

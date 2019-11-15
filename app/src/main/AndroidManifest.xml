@@ -21,7 +21,8 @@
         <activity android:name=".Board5X5Activity" />
         <activity android:name=".Board7X7Activity" />
         <activity android:name=".Board9X9Activity" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".GameFinishedActivity"></activity>
     </application>
 
 </manifest>

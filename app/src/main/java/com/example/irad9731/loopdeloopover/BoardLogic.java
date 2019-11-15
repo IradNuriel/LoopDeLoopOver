@@ -1,9 +1,11 @@
 package com.example.irad9731.loopdeloopover;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,8 +13,11 @@ import android.support.v7.widget.GridLayout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -20,6 +25,8 @@ public abstract class BoardLogic extends AppCompatActivity {
     protected GridLayout mGrid;
     protected TextView mClock;
     public long start_time;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     private ClockThread clockThread;
 
     @Override
@@ -123,11 +130,11 @@ public abstract class BoardLogic extends AppCompatActivity {
                 itemView.setOnLongClickListener(new LongPressListener());
                 mGrid.addView(itemView);
             }
-            removeArrayFromPref();
         }
         String s = this.getClass().getSimpleName();
         SharedPreferences sharedPreferences = getSharedPreferences(s,Context.MODE_PRIVATE);
         start_time = sharedPreferences.getLong("startTime",System.currentTimeMillis());
+        removeArrayFromPref();
         //clockThread.start();
     }
 
@@ -196,8 +203,10 @@ public abstract class BoardLogic extends AppCompatActivity {
                     boolean ended = isGameFinished();
                     if(ended){
                         removeArrayFromPref();
-                        setResult(RESULT_OK);
-                        finish();
+                        Intent i = new Intent(BoardLogic.this,GameFinishedActivity.class);
+                        i.putExtra("level",BoardLogic.this.getClass().getSimpleName().substring(1 + BoardLogic.this.getClass().getSimpleName().indexOf('d'),BoardLogic.this.getClass().getSimpleName().lastIndexOf('A')));
+                        i.putExtra("beatingTime",System.currentTimeMillis() - start_time);
+                        startActivityForResult(i,1);
                     }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -211,15 +220,36 @@ public abstract class BoardLogic extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    public class MyDragShadowBuilder extends View.DragShadowBuilder {
+
+        @Override
+        public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
+            outShadowSize.set(1,1);
+            outShadowTouchPoint.set(0,0);
+        }
+    }
+
+
     protected class LongPressListener implements View.OnLongClickListener {
         @Override
         public boolean onLongClick(View view) {
-            final ClipData data = ClipData.newPlainText("", "");
-            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder();
-            view.startDragAndDrop(data, shadowBuilder, view, 1);
+            try {
 
+                final ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new MyDragShadowBuilder();
+                view.startDragAndDrop(data, shadowBuilder, view, 0);
+            }catch (Exception e){
+                Log.e("asd",e.getStackTrace().toString());
+            }
             return true;
         }
+
     }
 
     public class ClockThread extends Thread{
