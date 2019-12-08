@@ -1,11 +1,15 @@
 package com.example.irad9731.loopdeloopover;
 
-public class Player {
+public class Player implements Comparable<Player>{
     String name;
     String uid;
     long bestTime5X5;
     long bestTime7X7;
     long bestTime9X9;
+
+
+
+
 
     public Player(String name, String uid, long bestTime5X5, long bestTime7X7, long bestTime9X9) {
         this.name = name;
@@ -57,5 +61,13 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Player o) {
+        if(this.bestTime5X5 == o.bestTime5X5){
+            return 0;
+        }
+        return (int)((this.bestTime5X5-o.bestTime5X5)/Math.abs(this.bestTime5X5-o.bestTime5X5));
     }
 }

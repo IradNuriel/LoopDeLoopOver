@@ -15,6 +15,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final int GAME_5X5 = 1;
     public final int GAME_7X7 = 2;
     public final int GAME_9X9 = 3;
+    public final int LEADERBOARD_5X5 = 4;
+    public final int LEADERBOARD_7X7 = 5;
+    public final int LEADERBOARD_9X9 = 6;
+
 
 
     @Override
@@ -27,6 +31,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bt5X5.setOnClickListener(this);
         bt7X7.setOnClickListener(this);
         bt9X9.setOnClickListener(this);
+        Button b5X5 = (Button)findViewById(R.id.leaderboard5_x5);
+        Button b7X7 = (Button)findViewById(R.id.leaderboard7_x7);
+        Button b9X9 = (Button)findViewById(R.id.leaderboard9_x9);
+        b5X5.setOnClickListener(this);
+        b7X7.setOnClickListener(this);
+        b9X9.setOnClickListener(this);
+
         Intent i = getIntent();
         ((TextView)findViewById(R.id.playerName)).setText(i.getStringExtra("name"));
     }
@@ -58,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 edit2.apply();
                 Intent intent2 = new Intent(this,Board9X9Activity.class);
                 startActivityForResult(intent2,GAME_9X9);
+                break;
+            case R.id.leaderboard5_x5:
+                Intent intent3 = new Intent(this,LeaderBoard5X5.class);
+                startActivityForResult(intent3,LEADERBOARD_5X5);
                 break;
         }
     }

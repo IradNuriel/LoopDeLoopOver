@@ -11,26 +11,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="167dp"
+        android:layout_marginTop="170dp"
+        android:layout_toEndOf="@+id/playerName"
         android:text="5X5" />
 
     <Button
         android:id="@+id/Button7X7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/Button5X5"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="198dp"
+        android:layout_marginBottom="201dp"
         android:text="7X7" />
 
     <Button
         android:id="@+id/Button9X9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/Button5X5"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="93dp"
+        android:layout_marginBottom="108dp"
         android:text="9X9" />
 
     <TextView
@@ -42,4 +42,30 @@
         android:layout_marginTop="62dp"
         android:textAlignment="textStart"
         android:textColor="@android:color/background_dark" />
+
+    <Button
+        android:id="@+id/leaderboard5_x5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/Button5X5"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="44dp"
+        android:text="Leaderboard 5X5" />
+
+    <Button
+        android:id="@+id/leaderboard7_x7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/leaderboard5_x5"
+        android:layout_alignTop="@+id/Button7X7"
+        android:layout_marginTop="-2dp"
+        android:text="Leaderboard 7X7" />
+
+    <Button
+        android:id="@+id/leaderboard9_x9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/leaderboard5_x5"
+        android:layout_alignBottom="@+id/Button9X9"
+        android:text="Leaderboard 9X9" />
 </RelativeLayout>
