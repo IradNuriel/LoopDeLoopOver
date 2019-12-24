@@ -1,27 +1,22 @@
 package com.example.irad9731.loopdeloopover;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
 
-public class LeaderBoard5X5 extends AppCompatActivity {
+public class LeaderBoard extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private LeaderBoardAdapter mAdapter;
+    private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     ArrayList<Player> mDataset = new ArrayList<>();
@@ -29,7 +24,7 @@ public class LeaderBoard5X5 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_leader_board5_x5);
+        setContentView(R.layout.activity_leader_board);
         ((Button)findViewById(R.id.backToMain)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,8 +41,21 @@ public class LeaderBoard5X5 extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        Intent i = getIntent();
+        String s=i.getStringExtra("level");
+
+
         // specify an adapter (see also next example)
-        mAdapter = new LeaderBoardAdapter(mDataset);
+        if(s.equals("5X5")) {
+            mAdapter = new LeaderBoardAdapter5X5(mDataset,this);
+        }else if(s.equals("7X7")) {
+            mAdapter = new LeaderBoardAdapter7X7(mDataset,this);
+        }else if(s.equals("9X9")){
+            mAdapter = new LeaderBoardAdapter9X9(mDataset,this);
+        }else{
+            throw new IllegalArgumentException("leader board must have a level");
+        }
+        ((TextView)findViewById(R.id.ld)).setText("LeaderBoard" + s);
         recyclerView.setAdapter(mAdapter);
     }
 

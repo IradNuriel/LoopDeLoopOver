@@ -8,12 +8,13 @@
 
 
     <TextView
+        android:id="@+id/ld"
         android:layout_width="195dp"
         android:layout_height="44dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="23dp"
-        android:text="Leaderboard 5X5"
+        android:text="Leaderboard "
         android:textColor="@android:color/background_dark"
         android:textSize="18sp" />
 

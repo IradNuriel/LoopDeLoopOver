@@ -71,9 +71,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(intent2,GAME_9X9);
                 break;
             case R.id.leaderboard5_x5:
-                Intent intent3 = new Intent(this,LeaderBoard5X5.class);
+                Intent intent3 = new Intent(this,LeaderBoard.class);
+                intent3.putExtra("level","5X5");
                 startActivityForResult(intent3,LEADERBOARD_5X5);
                 break;
+            case R.id.leaderboard7_x7:
+                Intent intent4 = new Intent(this,LeaderBoard.class);
+                intent4.putExtra("level","7X7");
+                startActivityForResult(intent4,LEADERBOARD_7X7);
+                break;
+            case R.id.leaderboard9_x9:
+                Intent intent5 = new Intent(this,LeaderBoard.class);
+                intent5.putExtra("level","9X9");
+                startActivityForResult(intent5,LEADERBOARD_9X9);
+                break;
+
+
         }
     }
 

@@ -1,26 +1,37 @@
 package com.example.irad9731.loopdeloopover;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
@@ -34,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmailField;
     private EditText mPasswordField;
     private EditText mNameField;
+    private ImageView imgPhoto;
+    private static final int PICK_IMAGE_REQUEST = 100;
 
 
     @Override
@@ -45,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordField = findViewById(R.id.field_password);
         mProgress = findViewById(R.id.progressBar);
         mNameField = findViewById(R.id.playerName);
+        imgPhoto = findViewById(R.id.playerImg);
     }
 
 
@@ -78,9 +92,90 @@ public class LoginActivity extends AppCompatActivity {
         // [END sign_in_with_email]
     }
 
+
+    public void pick() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+
+    private void uploadImageIntoFB(final FirebaseUser user){
+
+       /* imgPhoto.setDrawingCacheEnabled(true);
+        imgPhoto.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(imgPhoto.getDrawingCache());*/
+
+        Bitmap bitmap = (Bitmap) imgPhoto.getTag();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        final StorageReference storageRef = storage.getReference().child("photos").child(user.getUid()+".jpeg");
+
+
+        UploadTask uploadTask = storageRef.putBytes(data);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {  if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return storageRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    String name = user.getEmail().substring(0,user.getEmail().indexOf('@'));
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .setPhotoUri(downloadUri)
+                            .build();
+                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            addNewPlayer(user);
+                            hideProgress();
+                        }
+                    });
+                } else {
+                    // Handle failures
+                    // ...
+                }
+            }
+        });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch(requestCode){
+            case PICK_IMAGE_REQUEST:
+                if(resultCode == RESULT_OK){
+                    Uri selectedImage = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                        imgPhoto.setImageBitmap(bitmap);
+                        imgPhoto.setTag(bitmap);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+    }
+
+
     private void addNewPlayer(final FirebaseUser user){
 
-        Player p = new Player(mNameField.getText().toString(),user.getUid(),Long.MAX_VALUE,Long.MAX_VALUE,Long.MAX_VALUE);
+        Player p = new Player(mNameField.getText().toString(),user.getUid(),Long.MAX_VALUE,Long.MAX_VALUE,Long.MAX_VALUE,user.getPhotoUrl().toString());
         database.getReference().child("players").child(user.getUid()).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -124,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            addNewPlayer(user);
+                            uploadImageIntoFB(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -194,6 +289,9 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case R.id.btnSignOut:
                 signOut();
+                break;
+            case R.id.gallery:
+                pick();
                 break;
             case R.id.btnGo:
                 moveToMenu(mAuth.getCurrentUser());

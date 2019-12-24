@@ -23,7 +23,7 @@
         <activity android:name=".Board9X9Activity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".GameFinishedActivity" />
-        <activity android:name=".LeaderBoard5X5"></activity>
+        <activity android:name=".LeaderBoard"></activity>
     </application>
 
 </manifest>

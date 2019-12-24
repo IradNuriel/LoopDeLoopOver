@@ -3,6 +3,7 @@ package com.example.irad9731.loopdeloopover;
 public class Player implements Comparable<Player>{
     String name;
     String uid;
+    String urlPhoto;
     long bestTime5X5;
     long bestTime7X7;
     long bestTime9X9;
@@ -11,12 +12,13 @@ public class Player implements Comparable<Player>{
 
 
 
-    public Player(String name, String uid, long bestTime5X5, long bestTime7X7, long bestTime9X9) {
+    public Player(String name, String uid, long bestTime5X5, long bestTime7X7, long bestTime9X9,String urlPhoto) {
         this.name = name;
         this.uid = uid;
         this.bestTime5X5 = bestTime5X5;
         this.bestTime7X7 = bestTime7X7;
         this.bestTime9X9 = bestTime9X9;
+        this.urlPhoto = urlPhoto;
     }
 
     public String getUid() {
@@ -61,6 +63,14 @@ public class Player implements Comparable<Player>{
 
     public String getName() {
         return name;
+    }
+
+    public void setUrlPhoto(String urlPhoto) {
+        this.urlPhoto = urlPhoto;
+    }
+
+    public String getUrlPhoto() {
+        return urlPhoto;
     }
 
     @Override

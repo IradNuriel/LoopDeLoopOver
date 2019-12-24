@@ -8,21 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 
-public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.MyViewHolder> {
+public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapter9X9.MyViewHolder> {
 
-
-
-    public ArrayList<Player> mDataset = new ArrayList<>();
+    public ArrayList<Player9X9> mDataset = new ArrayList<>();
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private LeaderBoard context;
 
 
 
@@ -31,8 +32,10 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Player p = ds.getValue(Player.class);
-                    mDataset.add(p);
+                    Player9X9 p = ds.getValue(Player9X9.class);
+                    if(p.bestTime9X9 < Long.MAX_VALUE) {
+                        mDataset.add(p);
+                    }
                 }
                 Collections.sort(mDataset);
                 notifyDataSetChanged();
@@ -60,9 +63,9 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     }
 
 
-    public LeaderBoardAdapter(ArrayList<Player> data){
+    public LeaderBoardAdapter9X9(ArrayList<Player> data,LeaderBoard context){
         getDataFromFB();
-
+        this.context=context;
     }
 
     @NonNull
@@ -75,6 +78,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
         viewHolder.bindData(mDataset.get(i),i);
+        getImageFromFB(mDataset.get(i),viewHolder.img);
     }
 
 
@@ -83,6 +87,21 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
 
         return mDataset.size();
     }
+
+
+
+    public void getImageFromFB(Player player,ImageView img){
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+
+
+
+// Download directly from StorageReference using Glide
+// (See MyAppGlideModule for Loader registration)
+        Glide.with( context/* context */)//.asBitmap()
+                .load(player.getUrlPhoto())
+                .into(img);
+    }
+
 
     public static class MyViewHolder  extends RecyclerView.ViewHolder{
         public TextView number;
@@ -98,12 +117,11 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
 
         }
         public void bindData(Player player,int i){
-            number.setText(i);
+            number.setText(String.valueOf(i+1));
             name.setText(player.getName());
-            time.setText(milisIntoClock(player.getBestTime5X5()));
+            time.setText(milisIntoClock(player.getBestTime9X9()));
         }
 
     }
-
 
 }
