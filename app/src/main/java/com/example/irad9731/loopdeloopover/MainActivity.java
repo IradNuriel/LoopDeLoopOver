@@ -1,5 +1,7 @@
 package com.example.irad9731.loopdeloopover;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -37,10 +39,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         b5X5.setOnClickListener(this);
         b7X7.setOnClickListener(this);
         b9X9.setOnClickListener(this);
-
+        if(!isMyServiceRunning(NewSheriffInTownService.class)){
+            Intent intent = new Intent(this,NewSheriffInTownService.class);
+            startService(intent);
+        }
         Intent i = getIntent();
         ((TextView)findViewById(R.id.playerName)).setText(i.getStringExtra("name"));
+
     }
+
+
+
+
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 
     @Override
@@ -117,22 +139,3 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.irad9731.loopdeloopover">
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,7 +23,12 @@
         <activity android:name=".Board9X9Activity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".GameFinishedActivity" />
-        <activity android:name=".LeaderBoard"></activity>
+        <activity android:name=".LeaderBoard" />
+
+        <service
+            android:name=".NewSheriffInTownService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
