@@ -28,7 +28,7 @@
         <service
             android:name=".NewSheriffInTownService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
     </application>
 
 </manifest>

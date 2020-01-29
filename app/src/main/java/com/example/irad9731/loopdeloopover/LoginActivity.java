@@ -242,9 +242,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Intent i = new Intent(LoginActivity.this,MainActivity.class);
                 Map m = (Map)dataSnapshot.getValue();
-                    String name = (String) m.get("name");
-                    i.putExtra("name", name);
-                    startActivity(i);
+                String name = (String) m.get("name");
+                i.putExtra("name", name);
+                startActivity(i);
 
             }
 

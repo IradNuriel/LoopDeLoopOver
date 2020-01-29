@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="remember5X5"
+        android:textSize="8sp"
+        android:title="continue 5X5 game you got out from?" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="remember7X7"
+        android:title="continue 7X7 game you got out from?"/>
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="remember9X9"
+        android:title="continue 9X9 game you got out from?"/>
+
+</PreferenceScreen>

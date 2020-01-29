@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class BoardLogic extends AppCompatActivity {
     protected GridLayout mGrid;
@@ -87,11 +88,16 @@ public abstract class BoardLogic extends AppCompatActivity {
         return array;
     }
 
-    public void removeArrayFromPref(){
+    public void removeArrayFromPref(String arrayName) {
         String fileName = this.getClass().getSimpleName();
         SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.clear();
+        int size = prefs.getInt(arrayName+"_size",0);
+        editor.remove(arrayName + "_size");
+        for (int i = 0; i < size; i++){
+            editor.remove(arrayName + "_" + i);
+        }
+        editor.remove("startTime");
         editor.apply();
     }
 
@@ -119,7 +125,19 @@ public abstract class BoardLogic extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ArrayList<Integer> state = getArrayPrefs("gameState");
-        if(!state.isEmpty() && state.size() == (mGrid.getChildCount())){
+
+        String s = this.getClass().getSimpleName();
+        if(s.equals(Board5X5Activity.class.getSimpleName())){
+            s="remember5X5";
+        }else if(s.equals(Board7X7Activity.class.getSimpleName())){
+            s="remember7X7";
+        }
+        else if(s.equals(Board9X9Activity.class.getSimpleName())){
+            s="remember9X9";
+        }
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.irad9731.loopdeloopover_preferences",Context.MODE_PRIVATE);
+        boolean f = sharedPreferences.getBoolean(s,true);
+        if(f && !state.isEmpty() && state.size() == (mGrid.getChildCount())){
             mGrid.removeAllViews();
             final LayoutInflater inflater = LayoutInflater.from(this);
             for (int i = 0; i < state.size(); i++) {
@@ -130,11 +148,39 @@ public abstract class BoardLogic extends AppCompatActivity {
                 itemView.setOnLongClickListener(new LongPressListener());
                 mGrid.addView(itemView);
             }
+            sharedPreferences = getSharedPreferences(this.getClass().getSimpleName(),Context.MODE_PRIVATE);
+            start_time = sharedPreferences.getLong("startTime",System.currentTimeMillis());
+            removeArrayFromPref("gameState");
+        }else{
+            int num=mGrid.getChildCount();
+            mGrid.removeAllViews();
+            int[] content = new int[num];
+
+            for(int i=0;i<num;i++){
+                content[i] = i+1;
+            }
+            Random rnd = new Random();
+            for (int i=0; i<content.length; i++) {
+                int randomPosition = rnd.nextInt(content.length);
+                int temp = content[i];
+                content[i] = content[randomPosition];
+                content[randomPosition] = temp;
+            }
+
+            final LayoutInflater inflater = LayoutInflater.from(this);
+            for (int i = 0; i < num; i++) {
+                //Adding the items dynamically into the grid.
+                final View itemView = inflater.inflate(R.layout.grid_item, mGrid, false);
+                final TextView text = (TextView) itemView.findViewById(R.id.text);
+                text.setText(String.valueOf(content[i]));
+                itemView.setOnLongClickListener(new LongPressListener());
+                mGrid.addView(itemView);
+            }
+            start_time=System.currentTimeMillis();
+            clockThread = new ClockThread();
+            clockThread.start();
         }
-        String s = this.getClass().getSimpleName();
-        SharedPreferences sharedPreferences = getSharedPreferences(s,Context.MODE_PRIVATE);
-        start_time = sharedPreferences.getLong("startTime",System.currentTimeMillis());
-        removeArrayFromPref();
+
         //clockThread.start();
     }
 
@@ -202,7 +248,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                     view.setVisibility(View.VISIBLE);
                     boolean ended = isGameFinished();
                     if(ended){
-                        removeArrayFromPref();
+                        removeArrayFromPref("gameState");
                         Intent i = new Intent(BoardLogic.this,GameFinishedActivity.class);
                         i.putExtra("level",BoardLogic.this.getClass().getSimpleName().substring(1 + BoardLogic.this.getClass().getSimpleName().indexOf('d'),BoardLogic.this.getClass().getSimpleName().lastIndexOf('A')));
                         i.putExtra("beatingTime",System.currentTimeMillis() - start_time);
