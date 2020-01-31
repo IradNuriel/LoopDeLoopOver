@@ -49,18 +49,6 @@ public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapt
         });
     }
 
-    public static String milisIntoClock(long bestTime){
-        long timeInSeconds = bestTime / 1000;
-        long min = timeInSeconds / 60;
-        long seconds = timeInSeconds % 60;
-        String m = String.valueOf(min);
-        m = (m.length() > 1) ? m : "0" + m;
-        String s = String.valueOf(seconds);
-        s = (s.length() > 1) ? s : "0" + s;
-        final String CLOCK = m + ":" + s;
-        String sBestTime = "Your best time is: " + CLOCK;
-        return sBestTime;
-    }
 
 
     public LeaderBoardAdapter9X9(ArrayList<Player> data,LeaderBoard context){
@@ -119,7 +107,8 @@ public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapt
         public void bindData(Player player,int i){
             number.setText(String.valueOf(i+1));
             name.setText(player.getName());
-            time.setText(milisIntoClock(player.getBestTime9X9()));
+            String x = "made it in: " + ClockClass.milisToClock(player.getBestTime9X9());
+            time.setText(x);
         }
 
     }

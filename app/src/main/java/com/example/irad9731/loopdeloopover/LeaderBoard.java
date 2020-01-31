@@ -32,9 +32,6 @@ public class LeaderBoard extends AppCompatActivity {
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.leaderBoard);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
@@ -45,7 +42,7 @@ public class LeaderBoard extends AppCompatActivity {
         String s=i.getStringExtra("level");
 
 
-        // specify an adapter (see also next example)
+        // specify an adapter
         if(s.equals("5X5")) {
             mAdapter = new LeaderBoardAdapter5X5(mDataset,this);
         }else if(s.equals("7X7")) {

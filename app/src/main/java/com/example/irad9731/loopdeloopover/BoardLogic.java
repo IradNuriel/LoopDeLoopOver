@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
@@ -97,7 +98,7 @@ public abstract class BoardLogic extends AppCompatActivity {
         for (int i = 0; i < size; i++){
             editor.remove(arrayName + "_" + i);
         }
-        editor.remove("startTime");
+        editor.remove("CurrentTime");
         editor.apply();
     }
 
@@ -114,7 +115,7 @@ public abstract class BoardLogic extends AppCompatActivity {
             String s = this.getClass().getSimpleName();
             SharedPreferences sharedPreferences = getSharedPreferences(s,Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putLong("startTime",start_time);
+            editor.putLong("CurrentTime",start_time-System.currentTimeMillis());
             editor.apply();
             setArrayPrefs("gameState", currentState);
         }
@@ -149,7 +150,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                 mGrid.addView(itemView);
             }
             sharedPreferences = getSharedPreferences(this.getClass().getSimpleName(),Context.MODE_PRIVATE);
-            start_time = sharedPreferences.getLong("startTime",System.currentTimeMillis());
+            start_time = sharedPreferences.getLong("CurrentTime",0)+System.currentTimeMillis();
             removeArrayFromPref("gameState");
         }else{
             int num=mGrid.getChildCount();
@@ -309,14 +310,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                             if (mClock != null) {
                                 long time = System.currentTimeMillis();
                                 long timeFromStart = time - start_time;
-                                long timeInSeconds = timeFromStart / 1000;
-                                long min = timeInSeconds / 60;
-                                long seconds = timeInSeconds % 60;
-                                String m = String.valueOf(min);
-                                m = (m.length() > 1) ? m : "0" + m;
-                                String s = String.valueOf(seconds);
-                                s = (s.length() > 1) ? s : "0" + s;
-                                final String CLOCK = m + ":" + s;
+                                final String CLOCK = ClockClass.milisToClock(timeFromStart);
                                 mClock.setText(CLOCK);
                             }
                         }

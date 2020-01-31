@@ -35,22 +35,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button bt5X5 = (Button)findViewById(R.id.Button5X5);
-        Button bt7X7 = (Button)findViewById(R.id.Button7X7);
-        Button bt9X9 = (Button)findViewById(R.id.Button9X9);
         Button btPlay = (Button)findViewById(R.id.playButton);
         btPlay.setOnClickListener(this);
-        bt5X5.setOnClickListener(this);
-        bt7X7.setOnClickListener(this);
-        bt9X9.setOnClickListener(this);
         Button btLeaderboard = (Button)findViewById(R.id.leaderBoardBt);
-        bt5X5 = (Button)findViewById(R.id.leaderboard5_x5);
-        bt7X7 = (Button)findViewById(R.id.leaderboard7_x7);
-        bt9X9 = (Button)findViewById(R.id.leaderboard9_x9);
         btLeaderboard.setOnClickListener(this);
-        bt5X5.setOnClickListener(this);
-        bt7X7.setOnClickListener(this);
-        bt9X9.setOnClickListener(this);
         if(!isMyServiceRunning(NewSheriffInTownService.class)){
             Intent intent = new Intent(this,NewSheriffInTownService.class);
             startService(intent);
@@ -80,36 +68,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.Button5X5:
-                Intent intent = new Intent(this,Board5X5Activity.class);
-                startActivityForResult(intent,GAME_5X5);
-                break;
-            case R.id.Button7X7:
-                Intent intent1 = new Intent(this,Board7X7Activity.class);
-                startActivityForResult(intent1,GAME_7X7);
-                break;
-            case R.id.Button9X9:
-                Intent intent2 = new Intent(this,Board9X9Activity.class);
-                startActivityForResult(intent2,GAME_9X9);
-                break;
             case R.id.playButton:
                 SelectLevelToPlay levelSelection = new SelectLevelToPlay();
                 levelSelection.show(getSupportFragmentManager(),"select level");
-                break;
-            case R.id.leaderboard5_x5:
-                Intent intent3 = new Intent(this,LeaderBoard.class);
-                intent3.putExtra("level","5X5");
-                startActivityForResult(intent3,LEADERBOARD_5X5);
-                break;
-            case R.id.leaderboard7_x7:
-                Intent intent4 = new Intent(this,LeaderBoard.class);
-                intent4.putExtra("level","7X7");
-                startActivityForResult(intent4,LEADERBOARD_7X7);
-                break;
-            case R.id.leaderboard9_x9:
-                Intent intent5 = new Intent(this,LeaderBoard.class);
-                intent5.putExtra("level","9X9");
-                startActivityForResult(intent5,LEADERBOARD_9X9);
                 break;
             case R.id.leaderBoardBt:
                 SelectLevelToLeaderBoard levelToLeaderBoard = new SelectLevelToLeaderBoard();
@@ -184,25 +145,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void leaderboardPress5X5() {
-        Intent intent3 = new Intent(this,LeaderBoard.class);
-        intent3.putExtra("level","5X5");
-        startActivityForResult(intent3,LEADERBOARD_5X5);
+        Intent intent = new Intent(this,LeaderBoard.class);
+        intent.putExtra("level","5X5");
+        startActivityForResult(intent,LEADERBOARD_5X5);
 
     }
 
     @Override
     public void leaderboardPress7X7() {
-        Intent intent3 = new Intent(this,LeaderBoard.class);
-        intent3.putExtra("level","7X7");
-        startActivityForResult(intent3,LEADERBOARD_7X7);
+        Intent intent = new Intent(this,LeaderBoard.class);
+        intent.putExtra("level","7X7");
+        startActivityForResult(intent,LEADERBOARD_7X7);
 
     }
 
     @Override
     public void leaderboardPress9X9() {
-        Intent intent3 = new Intent(this,LeaderBoard.class);
-        intent3.putExtra("level","9X9");
-        startActivityForResult(intent3,LEADERBOARD_9X9);
+        Intent intent = new Intent(this,LeaderBoard.class);
+        intent.putExtra("level","9X9");
+        startActivityForResult(intent,LEADERBOARD_9X9);
 
     }
 
