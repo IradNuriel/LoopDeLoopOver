@@ -176,7 +176,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void addNewPlayer(final FirebaseUser user){
+        if(mNameField.getText().equals("")){
 
+        }
         Player p = new Player(mNameField.getText().toString(),user.getUid(),Long.MAX_VALUE,Long.MAX_VALUE,Long.MAX_VALUE,user.getPhotoUrl().toString());
         database.getReference().child("players").child(user.getUid()).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -284,10 +286,21 @@ public class LoginActivity extends AppCompatActivity {
         int i = v.getId();
         switch(i){
             case R.id.btnCreateAccount:
-                createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                if(mNameField.getText().toString().equals("")||mEmailField.getText().toString().equals("")||mPasswordField.getText().toString().equals("")){
+                    Toast.makeText(LoginActivity.this, "please enter all attributes before signing up",
+                            Toast.LENGTH_SHORT).show();
+
+                }else {
+                    createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                }
                 break;
             case R.id.btnSigninAccount:
-                signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                if(mPasswordField.getText().toString().equals("")||mEmailField.getText().toString().equals("")){
+                    Toast.makeText(LoginActivity.this, "please enter all attributes before signing in",
+                            Toast.LENGTH_SHORT).show();
+                }else {
+                    signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                }
                 break;
             case R.id.btnSignOut:
                 signOut();
@@ -296,7 +309,13 @@ public class LoginActivity extends AppCompatActivity {
                 pick();
                 break;
             case R.id.btnGo:
-                moveToMenu(mAuth.getCurrentUser());
+                if(mAuth.getCurrentUser()==null){
+                    Toast.makeText(LoginActivity.this, "please sign in/sign up before you continue",
+                            Toast.LENGTH_SHORT).show();
+
+                }else {
+                    moveToMenu(mAuth.getCurrentUser());
+                }
                 break;
         }
     }
