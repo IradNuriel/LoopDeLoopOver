@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "FB_KEY"
+          "current_key": FB_KEY
         }
       ],
       "services": {
