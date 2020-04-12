@@ -193,7 +193,7 @@ public class NewSheriffInTownService extends Service {
                         if(lastBest5X5!=null) {
                             if (!lastBest5X5.uid.equals(best5X5.uid) && !mAuth.getCurrentUser().getUid().equals(best5X5.uid)) {
                                 startForeground(NOT, createNotification("There is a new sheriff in the town!\n" + best5X5.name +
-                                        " beaten the 5X5 level in " + milisIntoClock(best5X5.bestTime5X5)));
+                                        " beaten the 5X5 level in " + ClockClass.milisToClock(best5X5.bestTime5X5)));
                                 stopForeground(false);
                             } else if (!lastBest5X5.uid.equals(best5X5.uid)) {
                                 startForeground(NOT, createNotification("You have made it!!!! You are the best in the world now in the 5X5 level!!"));
@@ -206,7 +206,7 @@ public class NewSheriffInTownService extends Service {
                         if(lastBest7X7!=null) {
                             if (!lastBest7X7.uid.equals(best7X7.uid) && !mAuth.getCurrentUser().getUid().equals(best7X7.uid)) {
                                 startForeground(NOT, createNotification("There is a new sheriff in the town!\n" + best7X7.name +
-                                        " beaten the 7X7 level in " + milisIntoClock(best7X7.bestTime7X7)));
+                                        " beaten the 7X7 level in " + ClockClass.milisToClock(best7X7.bestTime7X7)));
                                 stopForeground(false);
                             } else if (!lastBest7X7.uid.equals(best7X7.uid)) {
                                 startForeground(NOT, createNotification("You have made it!!!! You are the best in the world now in the 7X7 level!!"));
@@ -219,7 +219,7 @@ public class NewSheriffInTownService extends Service {
                         if(lastBest9X9!=null) {
                             if (!lastBest9X9.uid.equals(best9X9.uid) && !mAuth.getCurrentUser().getUid().equals(best9X9.uid)) {
                                 startForeground(NOT, createNotification("There is a new sheriff in the town!\n" + best9X9.name +
-                                        " beaten the 9X9 level in " + milisIntoClock(best9X9.bestTime9X9)));
+                                        " beaten the 9X9 level in " + ClockClass.milisToClock(best9X9.bestTime9X9)));
                                 stopForeground(false);
                             } else if (!lastBest9X9.uid.equals(best9X9.uid)) {
                                 startForeground(NOT, createNotification("You have made it!!!! You are the best in the world now in the 9X9 level!!"));
