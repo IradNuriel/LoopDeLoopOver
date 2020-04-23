@@ -19,26 +19,25 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapter9X9.MyViewHolder> {
+public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapter9X9.MyViewHolder> {//an adapter to leader board of the 9X9 level
 
-    public ArrayList<Player9X9> mDataset = new ArrayList<>();
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private LeaderBoard context;
-
+    public ArrayList<Player9X9> mDataset = new ArrayList<>();//this list contains all the data that displayed in the leader board
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();//firebase instance
+    private LeaderBoard context;//the activity
 
 
     private void getDataFromFB(){
         mDatabase.getReference().child("players").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Player9X9 p = ds.getValue(Player9X9.class);
-                    if(p.bestTime9X9 < Long.MAX_VALUE) {
-                        mDataset.add(p);
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {//get all players that once finished the 9X9 level
+                    Player9X9 p = ds.getValue(Player9X9.class);//get the player
+                    if(p.bestTime9X9 < Long.MAX_VALUE) {//if the player actually played the level
+                        mDataset.add(p);//add him the the displayed player
                     }
                 }
-                Collections.sort(mDataset);
-                notifyDataSetChanged();
+                Collections.sort(mDataset);//sort the players by their best time
+                notifyDataSetChanged();//display
 
             }
 
@@ -51,7 +50,7 @@ public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapt
 
 
 
-    public LeaderBoardAdapter9X9(ArrayList<Player> data,LeaderBoard context){
+    public LeaderBoardAdapter9X9(ArrayList<Player> data, LeaderBoard context){//when loaded, display the data
         getDataFromFB();
         this.context=context;
     }
@@ -64,7 +63,7 @@ public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapt
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {//when there is new information to display, display it
         viewHolder.bindData(mDataset.get(i),i);
         getImageFromFB(mDataset.get(i),viewHolder.img);
     }
@@ -78,7 +77,7 @@ public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapt
 
 
 
-    public void getImageFromFB(Player player,ImageView img){
+    public void getImageFromFB(Player player,ImageView img){//use glide to gat the current player image displayed
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
 
@@ -89,7 +88,6 @@ public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapt
                 .load(player.getUrlPhoto())
                 .into(img);
     }
-
 
     public static class MyViewHolder  extends RecyclerView.ViewHolder{
         public TextView number;
@@ -104,12 +102,17 @@ public class LeaderBoardAdapter9X9 extends RecyclerView.Adapter<LeaderBoardAdapt
             img = (ImageView)itemView.findViewById(R.id.playerImg);
 
         }
-        public void bindData(Player player,int i){
+        public void bindData(Player player,int i){//display data
             number.setText(String.valueOf(i+1));
             name.setText(player.getName());
-            String x = "made it in: " + ClockClass.milisToClock(player.getBestTime9X9());
+            String x ="made it in: " + ClockClass.millisToClock(player.getBestTime9X9());
             time.setText(x);
+
         }
+
+
+
+
 
     }
 

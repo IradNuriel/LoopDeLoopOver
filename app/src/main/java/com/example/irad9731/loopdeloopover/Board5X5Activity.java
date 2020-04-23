@@ -11,19 +11,20 @@ import java.util.Random;
 
 public class Board5X5Activity extends BoardLogic {
 
-    private static final int NBR_ITEMS = 25;
-//    private GridLayout mGrid;
+    private static final int NBR_ITEMS = 25;//this constant presenting the number of slots in the grid
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board5_x5);
 
+        //setting up the layout elements variables
         mGrid = (GridLayout) findViewById(R.id.grid_layout5X5);
         mClock = (TextView)findViewById(R.id.clock5X5);
+        //setting up the drag&drop system
         mGrid.setOnDragListener(new DragListener());
+        //randomize the grid elements
         int[] content = new int[NBR_ITEMS];
-
         for(int i=0;i<NBR_ITEMS;i++){
             content[i] = i+1;
         }
@@ -34,7 +35,7 @@ public class Board5X5Activity extends BoardLogic {
             content[i] = content[randomPosition];
             content[randomPosition] = temp;
         }
-
+        //inflate the grid elements into layout elements
         final LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < NBR_ITEMS; i++) {
             //Adding the items dynamically into the grid.

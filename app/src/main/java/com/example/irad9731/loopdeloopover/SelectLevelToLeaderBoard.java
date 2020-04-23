@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
-public class SelectLevelToLeaderBoard extends DialogFragment {
+public class SelectLevelToLeaderBoard extends DialogFragment {//a class that is a popup where the user can choose the leader board he want to see
     public LeaderBoardHandleButtons handler;
     public SelectLevelToLeaderBoard(){
 

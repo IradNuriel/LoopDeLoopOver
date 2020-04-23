@@ -1,7 +1,5 @@
 package com.example.irad9731.loopdeloopover;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,27 +19,27 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LeaderBoardAdapter5X5 extends RecyclerView.Adapter<LeaderBoardAdapter5X5.MyViewHolder> {
+public class LeaderBoardAdapter5X5 extends RecyclerView.Adapter<LeaderBoardAdapter5X5.MyViewHolder> {//an adapter to leader board of the 5X5 level
 
 
 
-    public ArrayList<Player5X5> mDataset = new ArrayList<>();
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private LeaderBoard context;
+    public ArrayList<Player5X5> mDataset = new ArrayList<>();//this list contains all the data that displayed in the leader board
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();//firebase instance
+    private LeaderBoard context;//the activity
 
 
     private void getDataFromFB(){
         mDatabase.getReference().child("players").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Player5X5 p = ds.getValue(Player5X5.class);
-                    if(p.bestTime5X5 < Long.MAX_VALUE) {
-                        mDataset.add(p);
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {//get all players that once finished the 5X5 level
+                    Player5X5 p = ds.getValue(Player5X5.class);//get the player
+                    if(p.bestTime5X5 < Long.MAX_VALUE) {//if the player actually played the level
+                        mDataset.add(p);//add him the the displayed player
                     }
                 }
-                Collections.sort(mDataset);
-                notifyDataSetChanged();
+                Collections.sort(mDataset);//sort the players by their best time
+                notifyDataSetChanged();//display
 
             }
 
@@ -54,7 +52,7 @@ public class LeaderBoardAdapter5X5 extends RecyclerView.Adapter<LeaderBoardAdapt
 
 
 
-    public LeaderBoardAdapter5X5(ArrayList<Player> data, LeaderBoard context){
+    public LeaderBoardAdapter5X5(ArrayList<Player> data, LeaderBoard context){//when loaded, display the data
         getDataFromFB();
         this.context=context;
     }
@@ -67,7 +65,7 @@ public class LeaderBoardAdapter5X5 extends RecyclerView.Adapter<LeaderBoardAdapt
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {//when there is new information to display, display it
         viewHolder.bindData(mDataset.get(i),i);
         getImageFromFB(mDataset.get(i),viewHolder.img);
     }
@@ -81,7 +79,7 @@ public class LeaderBoardAdapter5X5 extends RecyclerView.Adapter<LeaderBoardAdapt
 
 
 
-    public void getImageFromFB(Player player,ImageView img){
+    public void getImageFromFB(Player player,ImageView img){//use glide to gat the current player image displayed
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
 
@@ -106,10 +104,10 @@ public class LeaderBoardAdapter5X5 extends RecyclerView.Adapter<LeaderBoardAdapt
             img = (ImageView)itemView.findViewById(R.id.playerImg);
 
         }
-        public void bindData(Player player,int i){
+        public void bindData(Player player,int i){//display data
             number.setText(String.valueOf(i+1));
             name.setText(player.getName());
-            String x ="made it in: " + ClockClass.milisToClock(player.getBestTime5X5());
+            String x ="made it in: " + ClockClass.millisToClock(player.getBestTime5X5());
             time.setText(x);
 
         }

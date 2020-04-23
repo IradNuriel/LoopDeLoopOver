@@ -38,7 +38,7 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
 
-    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();//database instance
 
     public ProgressBar mProgress;
     private FirebaseAuth mAuth;
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {//getting layout elements variables
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
@@ -63,11 +63,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void signIn(String email, String password) {
+    private void signIn(String email, String password) {//sign in method
 
         showProgress();
 
-        // [START sign_in_with_email]
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -87,25 +87,21 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         hideProgress();
-                        // [END_EXCLUDE]
+
                     }
                 });
-        // [END sign_in_with_email]
+
     }
 
 
-    public void pick() {
+    public void pick() {//move to gallery to choose profile image
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
 
-    private void uploadImageIntoFB(final FirebaseUser user){
-
-       /* imgPhoto.setDrawingCacheEnabled(true);
-        imgPhoto.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(imgPhoto.getDrawingCache());*/
+    private void uploadImageIntoFB(final FirebaseUser user){//upload selected image to the database in the cloud
 
         Bitmap bitmap = (Bitmap) imgPhoto.getTag();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -155,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {//when image selected
 
         switch(requestCode){
             case PICK_IMAGE_REQUEST:
@@ -175,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void addNewPlayer(final FirebaseUser user){
+    private void addNewPlayer(final FirebaseUser user){//adding new player to the database
         if(mNameField.getText().equals("")){
 
         }
@@ -213,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
         updateUI(currentUser);
     }
 
-    private void createAccount(String email,String password){
+    private void createAccount(String email,String password){//add new account to the firebase authentication service
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -238,7 +234,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void moveToMenu(final FirebaseUser currentUser){
+    private void moveToMenu(final FirebaseUser currentUser){//go to main activity
         database.getReference().child("players").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -258,7 +254,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void signOut() {
+    private void signOut() {//sign out
         mAuth.signOut();
         updateUI(mAuth.getCurrentUser());
     }
@@ -282,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void onClick(View v){
+    public void onClick(View v){//specify action
         int i = v.getId();
         switch(i){
             case R.id.btnCreateAccount:

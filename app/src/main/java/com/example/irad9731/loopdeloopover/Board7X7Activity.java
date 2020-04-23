@@ -16,9 +16,12 @@ public class Board7X7Activity extends BoardLogic {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board7_x7);
 
+        //setting up the layout elements variables
         mGrid = (GridLayout) findViewById(R.id.grid_layout7X7);
         mClock = (TextView)findViewById(R.id.clock7X7);
+        //setting up the drag&drop system
         mGrid.setOnDragListener(new DragListener());
+        //randomize the grid elements
         int[] content = new int[NBR_ITEMS];
         for(int i=0;i<NBR_ITEMS;i++){
             content[i] = i+1;
@@ -30,7 +33,7 @@ public class Board7X7Activity extends BoardLogic {
             content[i] = content[randomPosition];
             content[randomPosition] = temp;
         }
-
+        //inflate the grid elements into layout elements
         final LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < NBR_ITEMS; i++) {
             //Adding the items dynamically into the grid.
@@ -41,4 +44,6 @@ public class Board7X7Activity extends BoardLogic {
             mGrid.addView(itemView);
         }
     }
+
 }
+

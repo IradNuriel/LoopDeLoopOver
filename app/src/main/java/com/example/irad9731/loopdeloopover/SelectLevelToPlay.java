@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
-public class SelectLevelToPlay extends DialogFragment {
+public class SelectLevelToPlay extends DialogFragment {//a fragment that is a popup where the user can choose the level he wants to play in
     public PlayHandleButtons handler;
     public SelectLevelToPlay(){
 

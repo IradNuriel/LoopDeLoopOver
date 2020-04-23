@@ -26,26 +26,29 @@ public class GameFinishedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_finished);
+        //getting the layout elements variables
         congratulate = (TextView)findViewById(R.id.congratulation);
         mBestTime = (TextView)findViewById(R.id.bestTimeForThisLevel);
         mainMenu = (Button)findViewById(R.id.mainMenu);
+        //getting beating time and level
         Intent i = getIntent();
         final String level = i.getStringExtra("level");
         final long beatingTime = i.getLongExtra("beatingTime",0);
-
-        final String CLOCK = ClockClass.milisToClock(beatingTime);
-
+        //translating beatingTime to look like a digital clock of minutes:seconds
+        final String CLOCK = ClockClass.millisToClock(beatingTime);
+        //displaying the congratulation message
         String congratulationMessage = "Congratulation, you have beaten the " + level + " level in: " + CLOCK + " minuets!!";
         congratulate.setText(congratulationMessage);
         database.getReference().child("players").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long bestTime = (long)((Map)dataSnapshot.getValue()).get("bestTime"+level);
-                if(bestTime > beatingTime){
-                    database.getReference().child("players").child(mAuth.getCurrentUser().getUid()).child("bestTime"+level).setValue(beatingTime);
-                    bestTime = beatingTime;
+                long bestTime = (long)((Map)dataSnapshot.getValue()).get("bestTime"+level);//extracting the best beating time of the level before this game
+                if(bestTime > beatingTime){//if the user did the best time in this game:
+                    database.getReference().child("players").child(mAuth.getCurrentUser().getUid()).child("bestTime"+level).setValue(beatingTime);//update the database
+                    bestTime = beatingTime;//update local variable
                 }
-                String sBestTime = "Your best time is: " + ClockClass.milisToClock(bestTime);
+                //displaying best time message
+                String sBestTime = "Your best time is: " + ClockClass.millisToClock(bestTime);
                 mBestTime.setText(sBestTime);
             }
 
@@ -56,7 +59,7 @@ public class GameFinishedActivity extends AppCompatActivity {
         });
         mainMenu.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//when the user press the button, return to the main menu
                 setResult(RESULT_OK);
                 finish();
             }

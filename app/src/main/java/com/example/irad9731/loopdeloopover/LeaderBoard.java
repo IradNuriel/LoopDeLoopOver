@@ -15,10 +15,9 @@ import java.util.ArrayList;
 
 public class LeaderBoard extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private RecyclerView recyclerView;//the leader board itself
+    private RecyclerView.Adapter mAdapter;//the adapter
+    private RecyclerView.LayoutManager layoutManager;//the layout maneger
     ArrayList<Player> mDataset = new ArrayList<>();
 
     @Override
@@ -27,7 +26,7 @@ public class LeaderBoard extends AppCompatActivity {
         setContentView(R.layout.activity_leader_board);
         ((Button)findViewById(R.id.backToMain)).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//if the user press the button, return to main menu
                 finish();
             }
         });

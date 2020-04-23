@@ -1,20 +1,17 @@
 package com.example.irad9731.loopdeloopover;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class BoardLogic extends AppCompatActivity {
-    protected GridLayout mGrid;
-    protected TextView mClock;
+    protected GridLayout mGrid;//
+    protected TextView mClock;//the clock layout
     public long start_time;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -34,12 +31,13 @@ public abstract class BoardLogic extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setting up the clock to 0 and starting the clock
         start_time = System.currentTimeMillis();
         clockThread = new ClockThread();
         clockThread.start();
     }
 
-    protected int calculateNewIndex(float x, float y) {
+    protected int calculateNewIndex(float x, float y) {//translating the coordinates to index in the grid
         //calculating the new column of the item
         final float cellWidth = mGrid.getWidth() / mGrid.getColumnCount();
         final int column = (int)(x / cellWidth);
@@ -54,7 +52,7 @@ public abstract class BoardLogic extends AppCompatActivity {
     }
 
 
-    protected boolean isGameFinished(){
+    protected boolean isGameFinished(){//checking if the elements in the grid are sorted and the game finished
         boolean flag = true;
         for(int i=0;i<(mGrid.getRowCount()*mGrid.getColumnCount() -1) && flag;i++){
             View current = mGrid.getChildAt(i);
@@ -69,7 +67,7 @@ public abstract class BoardLogic extends AppCompatActivity {
     }
 
 
-    public void setArrayPrefs(String arrayName, ArrayList<Integer> array) {
+    public void setArrayPrefs(String arrayName, ArrayList<Integer> array) {//insert array into the shared preference
         String fileName = this.getClass().getSimpleName();
         SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -79,7 +77,7 @@ public abstract class BoardLogic extends AppCompatActivity {
         editor.apply();
     }
 
-    public ArrayList<Integer> getArrayPrefs(String arrayName) {
+    public ArrayList<Integer> getArrayPrefs(String arrayName) {//extract array from shared preference
         String fileName = this.getClass().getSimpleName();
         SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         int size = prefs.getInt(arrayName + "_size", 0);
@@ -89,7 +87,7 @@ public abstract class BoardLogic extends AppCompatActivity {
         return array;
     }
 
-    public void removeArrayFromPref(String arrayName) {
+    public void removeArrayFromPref(String arrayName) {//remove array from shared preference
         String fileName = this.getClass().getSimpleName();
         SharedPreferences prefs = getSharedPreferences(fileName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -105,13 +103,15 @@ public abstract class BoardLogic extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(!isGameFinished()) {
+        if(!isGameFinished()) {//if we haven't finished the game
+            //store the game state into array
             ArrayList<Integer> currentState = new ArrayList<>();
             for (int i = 0; i < mGrid.getColumnCount() * mGrid.getRowCount(); i++) {
                 View current = mGrid.getChildAt(i);
                 final TextView currentText = (TextView) current.findViewById(R.id.text);
                 currentState.add(Integer.parseInt(currentText.getText().toString()));
             }
+            //pushing the game state into the shared preference
             String s = this.getClass().getSimpleName();
             SharedPreferences sharedPreferences = getSharedPreferences(s,Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -125,6 +125,7 @@ public abstract class BoardLogic extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //getting the last game state from shared preference
         ArrayList<Integer> state = getArrayPrefs("gameState");
 
         String s = this.getClass().getSimpleName();
@@ -138,8 +139,8 @@ public abstract class BoardLogic extends AppCompatActivity {
         }
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.irad9731.loopdeloopover_preferences",Context.MODE_PRIVATE);
         boolean f = sharedPreferences.getBoolean(s,true);
-        if(f && !state.isEmpty() && state.size() == (mGrid.getChildCount())){
-            mGrid.removeAllViews();
+        if(f && !state.isEmpty() && state.size() == (mGrid.getChildCount())){//if the user wanted to save last game state, and there is saved game
+            mGrid.removeAllViews();//remove the random grid we created in onCreate, and insert new elements according to the state from the shared preference
             final LayoutInflater inflater = LayoutInflater.from(this);
             for (int i = 0; i < state.size(); i++) {
                 //Adding the items dynamically into the grid.
@@ -149,10 +150,13 @@ public abstract class BoardLogic extends AppCompatActivity {
                 itemView.setOnLongClickListener(new LongPressListener());
                 mGrid.addView(itemView);
             }
+            //setting the clock to be at the time it was left in
             sharedPreferences = getSharedPreferences(this.getClass().getSimpleName(),Context.MODE_PRIVATE);
             start_time = sharedPreferences.getLong("CurrentTime",0)+System.currentTimeMillis();
+            //remove the last game state from the pref
             removeArrayFromPref("gameState");
         }else{
+            //initial a random board
             int num=mGrid.getChildCount();
             mGrid.removeAllViews();
             int[] content = new int[num];
@@ -202,7 +206,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                     }else if(Math.abs(index - oldIndex) == 1){//A row spinning!
                         int row = oldIndex / mGrid.getColumnCount();
                         int dir = index - oldIndex;
-                        if(dir == 1){//A right spin
+                        if(dir == 1){//A right spin, store the most right element in the row , move every other element right by 1 cell, and then put the element we stored in the most left position
                             View last = mGrid.getChildAt(row*mGrid.getColumnCount() + mGrid.getColumnCount() - 1);
                             for(int i =  row*mGrid.getColumnCount() + mGrid.getColumnCount() - 2 ; i >= row*mGrid.getColumnCount() ; i--){
                                 View current = mGrid.getChildAt(i);
@@ -211,7 +215,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                             }
                             mGrid.removeView(last);
                             mGrid.addView(last,row*mGrid.getColumnCount());
-                        }else{//A left spin
+                        }else{//A left spin, store the most left element in the row , move every other element left by 1 cell, and then put the element we stored in the most right position
                             View last = mGrid.getChildAt(row*mGrid.getColumnCount());
                             for(int i = row*mGrid.getColumnCount() + 1; i < row*mGrid.getColumnCount() + mGrid.getColumnCount() ; i++){
                                 View current = mGrid.getChildAt(i);
@@ -224,7 +228,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                     }else if(Math.abs(index - oldIndex) == mGrid.getColumnCount()){//A column spinning!
                         int col = oldIndex % mGrid.getColumnCount();
                         int dir = (index - oldIndex) / mGrid.getColumnCount();
-                        if(dir == 1){//A down spin
+                        if(dir == 1){//A down spin, store the lowest element in the  , move every other element up by 1 cell, and then put the element we stored in the highest position
                             View last = mGrid.getChildAt((mGrid.getColumnCount() - 1)*mGrid.getColumnCount() + col);
                             for(int i = (mGrid.getColumnCount() - 2)*mGrid.getColumnCount() + col ; i >= col; i -= mGrid.getColumnCount()){
                                 View current = mGrid.getChildAt(i);
@@ -233,7 +237,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                             }
                             mGrid.removeView(last);
                             mGrid.addView(last,col);
-                        }else{//An un spin
+                        }else{//An un spin, store the highest element in the  , move every other element down by 1 cell, and then put the element we stored in the lowest position
                             View last = mGrid.getChildAt(col);
                             for(int i = mGrid.getColumnCount() + col; i <  mGrid.getColumnCount() * mGrid.getColumnCount() + col; i += mGrid.getColumnCount()){
                                 View current = mGrid.getChildAt(i);
@@ -245,13 +249,13 @@ public abstract class BoardLogic extends AppCompatActivity {
                         }
                     }
                     break;
-                case DragEvent.ACTION_DROP:
+                case DragEvent.ACTION_DROP://when the player stop touching the screen
                     view.setVisibility(View.VISIBLE);
-                    boolean ended = isGameFinished();
-                    if(ended){
+                    boolean ended = isGameFinished();//check if the game finished
+                    if(ended){//if the game finished, move to the gameFinishedActivity
                         removeArrayFromPref("gameState");
                         Intent i = new Intent(BoardLogic.this,GameFinishedActivity.class);
-                        i.putExtra("level",BoardLogic.this.getClass().getSimpleName().substring(1 + BoardLogic.this.getClass().getSimpleName().indexOf('d'),BoardLogic.this.getClass().getSimpleName().lastIndexOf('A')));
+                        i.putExtra("level",BoardLogic.this.getClass().getSimpleName().substring(1 + BoardLogic.this.getClass().getSimpleName().indexOf('d'),BoardLogic.this.getClass().getSimpleName().lastIndexOf('A'))/*since this is a logic class that is mutual to all the levels, we need to extract the level name*/);
                         i.putExtra("beatingTime",System.currentTimeMillis() - start_time);
                         startActivityForResult(i,1);
                     }
@@ -268,12 +272,12 @@ public abstract class BoardLogic extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {//when user return from the gameFinishedActivity, move him to the mainActivity
         setResult(RESULT_OK);
         finish();
     }
 
-    public class MyDragShadowBuilder extends View.DragShadowBuilder {
+    public class MyDragShadowBuilder extends View.DragShadowBuilder {//class that all it does is to remove visual bugs
 
         @Override
         public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
@@ -287,7 +291,7 @@ public abstract class BoardLogic extends AppCompatActivity {
         @Override
         public boolean onLongClick(View view) {
             try {
-
+                //when the user longPress one of the grid cells, start drag&drop
                 final ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new MyDragShadowBuilder();
                 view.startDragAndDrop(data, shadowBuilder, view, 0);
@@ -299,23 +303,23 @@ public abstract class BoardLogic extends AppCompatActivity {
 
     }
 
-    public class ClockThread extends Thread{
+    public class ClockThread extends Thread{//the class that maneging the clock.
         @Override
         public void run() {
             try {
-                while (true) {
+                while (true) {//always do:
                     runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {
+                        public void run() {//get the number of milliseconds from the start and updating the clock
                             if (mClock != null) {
                                 long time = System.currentTimeMillis();
                                 long timeFromStart = time - start_time;
-                                final String CLOCK = ClockClass.milisToClock(timeFromStart);
+                                final String CLOCK = ClockClass.millisToClock(timeFromStart);
                                 mClock.setText(CLOCK);
                             }
                         }
                     });
-                    sleep(1000);
+                    sleep(1000);//only once a second
                 }
             }catch (Exception e){
                 e.printStackTrace();

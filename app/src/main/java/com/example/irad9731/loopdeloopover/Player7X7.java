@@ -1,6 +1,6 @@
 package com.example.irad9731.loopdeloopover;
 
-public class Player7X7 extends Player {
+public class Player7X7 extends Player {//the exact same player but now we compare him by his record on 7X7
     public Player7X7(String name, String uid, long bestTime5X5, long bestTime7X7, long bestTime9X9,String urlPhoto) {
         super(name,uid,bestTime5X5,bestTime7X7,bestTime9X9,urlPhoto);
     }
