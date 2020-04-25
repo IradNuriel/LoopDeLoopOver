@@ -9,17 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 
 public class LeaderBoard extends AppCompatActivity {
 
     private RecyclerView recyclerView;//the leader board itself
     private RecyclerView.Adapter mAdapter;//the adapter
     private RecyclerView.LayoutManager layoutManager;//the layout maneger
-    ArrayList<Player> mDataset = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +38,11 @@ public class LeaderBoard extends AppCompatActivity {
 
         // specify an adapter
         if(s.equals("5X5")) {
-            mAdapter = new LeaderBoardAdapter5X5(mDataset,this);
+            mAdapter = new LeaderBoardAdapter5X5(this);
         }else if(s.equals("7X7")) {
-            mAdapter = new LeaderBoardAdapter7X7(mDataset,this);
+            mAdapter = new LeaderBoardAdapter7X7(this);
         }else if(s.equals("9X9")){
-            mAdapter = new LeaderBoardAdapter9X9(mDataset,this);
+            mAdapter = new LeaderBoardAdapter9X9(this);
         }else{
             throw new IllegalArgumentException("leader board must have a level");
         }

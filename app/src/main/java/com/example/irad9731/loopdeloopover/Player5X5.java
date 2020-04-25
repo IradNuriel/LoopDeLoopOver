@@ -9,7 +9,7 @@ public class Player5X5 extends Player {//the exact same player but now we compar
     }
 
     @Override
-    public int compareTo(Player o) {
+    public int compareTo(Player o) {//compareTo function, compare two players, and will return -1 if this is better than the other in 5X5 level, 1 if the other better than this in the 5X5 level, and 0 if they equally good
         if(this.bestTime5X5 == o.bestTime5X5){
             return 0;
         }

@@ -237,7 +237,7 @@ public abstract class BoardLogic extends AppCompatActivity {
                             }
                             mGrid.removeView(last);
                             mGrid.addView(last,col);
-                        }else{//An un spin, store the highest element in the  , move every other element down by 1 cell, and then put the element we stored in the lowest position
+                        }else{//An up spin, store the highest element in the  , move every other element up by 1 cell, and then put the element we stored in the lowest position
                             View last = mGrid.getChildAt(col);
                             for(int i = mGrid.getColumnCount() + col; i <  mGrid.getColumnCount() * mGrid.getColumnCount() + col; i += mGrid.getColumnCount()){
                                 View current = mGrid.getChildAt(i);

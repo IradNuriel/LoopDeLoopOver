@@ -50,7 +50,7 @@ public class LeaderBoardAdapter7X7 extends RecyclerView.Adapter<LeaderBoardAdapt
 
 
 
-    public LeaderBoardAdapter7X7(ArrayList<Player> data, LeaderBoard context){//when loaded, display the data
+    public LeaderBoardAdapter7X7(LeaderBoard context){//when loaded, display the data
         getDataFromFB();
         this.context=context;
     }

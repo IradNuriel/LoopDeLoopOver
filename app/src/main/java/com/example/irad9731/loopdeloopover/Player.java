@@ -74,7 +74,7 @@ public class Player implements Comparable<Player>{//the class that present how t
     }
 
     @Override
-    public int compareTo(Player o) {//and he has a compareTo function(will not be used for this class, only for the extended class(i.e Player5X5,Player7X7,Player9X9)
+    public int compareTo(Player o) {//and he has a compareTo function(will not be used for this class, only for the extended class(i.e. Player5X5,Player7X7,Player9X9)
         if(this.bestTime5X5 == o.bestTime5X5){
             return 0;
         }

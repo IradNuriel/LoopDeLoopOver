@@ -9,7 +9,7 @@ public class Player7X7 extends Player {//the exact same player but now we compar
     }
 
     @Override
-    public int compareTo(Player o) {
+    public int compareTo(Player o) {//compareTo function, compare two players, and will return -1 if this is better than the other in 7X7 level, 1 if the other better than this in the 7X7 level, and 0 if they equally good
         if(this.bestTime7X7 == o.bestTime7X7){
             return 0;
         }

@@ -141,7 +141,7 @@ public class NewSheriffInTownService extends Service {//service that when someon
             mDatabase.getReference().child("players").addValueEventListener(new ValueEventListener() {//whenever there is a change in the database
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        //who where the best players before
+                        //who was the best players before
                         Player5X5 lastBest5X5=best5X5;
                         Player7X7 lastBest7X7=best7X7;
                         Player9X9 lastBest9X9=best9X9;
